@@ -1,0 +1,16 @@
+# Config for openapi-python-client.
+#
+# Usage:
+#   pip install openapi-python-client
+#   openapi-python-client generate --url https://api-dev.growpanel.io/openapi.json --config openapi-python-client.config.yaml --overwrite
+#
+# Output goes to src/growpanel/_generated/ — a fully-typed client with one module per tag.
+# The hand-written src/growpanel/__init__.py + src/growpanel/client.py wrap it with an
+# ergonomic GrowPanel class (`from growpanel import GrowPanel`).
+
+project_name_override: growpanel
+package_name_override: _generated
+use_path_prefixes_for_title_model_names: false
+field_constraints: true
+content_type_overrides:
+    "application/json": "application/json"
