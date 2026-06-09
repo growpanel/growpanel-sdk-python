@@ -71,18 +71,18 @@ class GrowPanel:
         # lower-cased with non-alphanumerics replaced by underscores.
         from ._generated import api  # noqa: F401 — triggers package load
 
+        # Analytics surfaces (read-only top-level metrics & customer views).
         self.reports = _Namespace(self, _resolve_tag_ops(api, "reports"))
         self.customers = _Namespace(self, _resolve_tag_ops(api, "customers"))
         self.plans = _Namespace(self, _resolve_tag_ops(api, "plans"))
-        self.plan_groups = _Namespace(self, _resolve_tag_ops(api, "data_plan_groups"))
-        self.segments = _Namespace(self, _resolve_tag_ops(api, "data_segments"))
-        self.data_sources = _Namespace(self, _resolve_tag_ops(api, "data_data_sources"))
-        self.data_customers = _Namespace(self, _resolve_tag_ops(api, "data_customers"))
-        self.data_invoices = _Namespace(self, _resolve_tag_ops(api, "data_invoices"))
-        self.data_plans = _Namespace(self, _resolve_tag_ops(api, "data_plans"))
+        # Account / integrations.
         self.profile = _Namespace(self, _resolve_tag_ops(api, "profile"))
         self.notifications = _Namespace(self, _resolve_tag_ops(api, "settings"))
         self.webhooks = _Namespace(self, _resolve_tag_ops(api, "webhooks"))
+        # Data ingestion API (CRUD over the raw billing-source data). Grouped under
+        # `gp.data.*` to keep the import surface separate from analytics.
+        self.data = _DataNamespace(self, api)
+        # Escape hatch: the raw generated module tree.
         self.raw = api
 
     def close(self) -> None:
@@ -109,3 +109,18 @@ def _resolve_tag_ops(api_pkg: Any, tag_prefix: str) -> dict:
         op_name = module_info.name.split(".")[-1]
         ops[op_name] = module
     return ops
+
+
+class _DataNamespace:
+    """Holder for the `gp.data.*` ingestion namespaces. Each sub-namespace is loaded
+    lazily from the generated tag modules so a missing tag (e.g. before first
+    `openapi-python-client generate` run) raises an informative error rather than
+    crashing module load."""
+
+    def __init__(self, client: "GrowPanel", api_pkg: Any) -> None:
+        self.customers   = _Namespace(client, _resolve_tag_ops(api_pkg, "data_customers"))
+        self.plans       = _Namespace(client, _resolve_tag_ops(api_pkg, "data_plans"))
+        self.plan_groups = _Namespace(client, _resolve_tag_ops(api_pkg, "data_plan_groups"))
+        self.segments    = _Namespace(client, _resolve_tag_ops(api_pkg, "data_segments"))
+        self.invoices    = _Namespace(client, _resolve_tag_ops(api_pkg, "data_invoices"))
+        self.sources     = _Namespace(client, _resolve_tag_ops(api_pkg, "data_data_sources"))

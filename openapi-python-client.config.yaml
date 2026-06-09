@@ -2,13 +2,18 @@
 #
 # Usage:
 #   pip install openapi-python-client
-#   openapi-python-client generate --url https://api-dev.growpanel.io/openapi.json --config openapi-python-client.config.yaml --overwrite
+#   openapi-python-client generate \
+#       --url https://api-dev.growpanel.io/openapi.json \
+#       --config openapi-python-client.config.yaml \
+#       --meta=none \
+#       --output-path src/growpanel/_generated \
+#       --overwrite
 #
-# Output goes to src/growpanel/_generated/ — a fully-typed client with one module per tag.
+# `--meta=none` skips the standalone-project scaffolding (pyproject.toml, README, .ruff_cache).
+# `--output-path` writes directly into our package — no manual move needed.
 # The hand-written src/growpanel/__init__.py + src/growpanel/client.py wrap it with an
 # ergonomic GrowPanel class (`from growpanel import GrowPanel`).
 
-project_name_override: growpanel
 package_name_override: _generated
 use_path_prefixes_for_title_model_names: false
 field_constraints: true

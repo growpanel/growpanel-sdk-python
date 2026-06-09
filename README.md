@@ -25,13 +25,25 @@ Issue a key in **app.growpanel.io → Account → API keys**. Pass it as `api_ke
 
 ## Surfaces
 
-The SDK groups operations by API area, mirroring the [interactive docs](https://api.growpanel.io/docs):
+The SDK mirrors the [interactive docs](https://api.growpanel.io/docs):
 
+**Analytics (read-only):**
 - `gp.reports.*` — MRR, leads, cohorts, cashflow, retention, churn
 - `gp.customers.*` — list + detail (analytics view)
 - `gp.plans.*` — list plans
-- `gp.plan_groups.*`, `gp.segments.*`, `gp.data_sources.*`, `gp.data_customers.*`, `gp.data_invoices.*`, `gp.data_plans.*` — data management with full CRUD
-- `gp.profile.*`, `gp.notifications.*`, `gp.webhooks.*` — account & integrations
+
+**Account & integrations:**
+- `gp.profile.*`, `gp.notifications.*`, `gp.webhooks.*`
+
+**Data ingestion (CRUD on a data source):**
+- `gp.data.customers.*` — create / read / update / delete raw customer rows
+- `gp.data.plans.*` — raw plan CRUD
+- `gp.data.plan_groups.*` — group plans together
+- `gp.data.segments.*` — saved filter combinations
+- `gp.data.invoices.*` — raw invoice CRUD
+- `gp.data.sources.*` — connected billing systems
+
+`gp.data.*` mirrors the `/data/*` URL prefix and keeps the ingestion API visually separate from the analytics surfaces.
 
 For anything not exposed as a named method, `gp.raw` is the generated module tree — every endpoint in the OpenAPI spec is reachable from there.
 
