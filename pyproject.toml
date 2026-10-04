@@ -44,6 +44,10 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/growpanel"]
+# _generated/ is gitignored (the SDK pipeline regenerates it), and Hatch leaves gitignored files out
+# of builds unless they are listed as artifacts. Without this the wheel ships no client at all.
+artifacts = ["src/growpanel/_generated"]
 
 [tool.hatch.build.targets.sdist]
 include = ["src/growpanel", "README.md", "LICENSE"]
+artifacts = ["src/growpanel/_generated"]

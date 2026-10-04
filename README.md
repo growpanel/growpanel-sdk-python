@@ -11,12 +11,21 @@ from growpanel import GrowPanel
 
 gp = GrowPanel(api_key="gp_...")
 
-summary = gp.reports.get_summary()
+summary = gp.reports.get_reports_summary()
 print(summary.summary.mrr_current)
 
-mrr = gp.reports.get_mrr(date="20260101-20260531", interval="month")
+mrr = gp.reports.get_reports_mrr(date="20260101-20260531", interval="month")
 for period in mrr.result:
     print(period.date, period.total_mrr)
+```
+
+Methods are named after the endpoint (`GET /reports/paused` → `get_reports_paused`). Enum parameters take the generated enum types:
+
+```python
+from growpanel._generated.models.get_reports_paused_sort import GetReportsPausedSort
+
+paused = gp.reports.get_reports_paused(sort=GetReportsPausedSort.EXPECTED_BACK)
+print(paused.result.summary.paused_mrr_current)
 ```
 
 ## Auth
@@ -66,7 +75,7 @@ from growpanel import GrowPanel, GrowPanelError
 
 gp = GrowPanel(api_key="...")
 try:
-    gp.customers.detail(id="cus_doesnotexist")
+    gp.customers.get_customers_id(id="cus_doesnotexist")
 except GrowPanelError as err:
     if err.status == 404:
         ...  # handle not-found
